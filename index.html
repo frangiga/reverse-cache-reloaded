@@ -54,18 +54,12 @@
       margin-top: clamp(2px, 1vh, 10px);
     }
 
-    .multi-logo-wrapper {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: clamp(4px, 1vh, 8px);
-      filter: drop-shadow(0 0 10px var(--accent-orange-glow));
-    }
-
     .multi-logo {
       width: clamp(70px, 13vh, 100px);
       height: clamp(70px, 13vh, 100px);
       object-fit: contain;
+      filter: drop-shadow(0 0 8px var(--accent-orange-glow));
+      margin-bottom: clamp(4px, 1vh, 8px);
     }
 
     .title-main {
@@ -91,12 +85,11 @@
     }
 
     .gc-code {
-      /* Aumentado un 30% respecto al tamaño anterior */
-      font-size: clamp(1.17rem, 2.86vh, 1.37rem);
-      font-weight: 800;
+      font-size: clamp(0.9rem, 2.2vh, 1.05rem);
+      font-weight: 700;
       letter-spacing: 4px;
       color: #d1d5db;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
       margin-top: clamp(4px, 1vh, 8px);
     }
 
@@ -203,9 +196,7 @@
 
   <div class="container">
     <header>
-      <div class="multi-logo-wrapper">
-        <img class="multi-logo" src="https://img.geocaching.com/0408071b-30c0-4641-ba83-19fcea0ec4af.png" alt="Multi Cache Logo">
-      </div>
+      <img class="multi-logo" src="https://frangiga.github.io/reverse-cache-reloaded/Multi.png" alt="Multi Cache Logo">
       <div class="title-main">REVERSE CACHÉ</div>
       <div class="title-sub">RELOADED</div>
       <div class="gc-code">GCBXGZR</div>
@@ -220,7 +211,7 @@
     <div class="footer-section">
       <button id="btn-consultar" class="btn-query" onclick="obtenerUbicacionGPS()">Consultar Metros</button>
       <footer>
-        Desarrollado por <a href="https://www.instagram.com/fran_giga/" target="_blank" rel="noopener noreferrer">fran_giga</a>
+        Desarrollado por <a href="https://www.instagram.com/fran_giga/" target="_blank" rel="noopener noreferrer" cite="https://www.instagram.com/fran_giga/">fran_giga</a>
       </footer>
     </div>
   </div>
