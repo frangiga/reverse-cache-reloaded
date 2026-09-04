@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Reverse Wherigo - Benimámet</title>
+  <style>
+    :root {
+      --bg-radial-center: #2a2d32;
+      --bg-radial-outer: #0d0e10;
+      --accent-yellow: #ffee00;
+      --accent-yellow-glow: rgba(255, 238, 0, 0.6);
+      --fluor-cyan: #00f3ff;
+      --fluor-cyan-glow: rgba(0, 243, 255, 0.5);
+      --card-bg: #16181b;
+      --text-main: #f0f0f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* Evita cualquier tipo de scroll */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at center, var(--bg-radial-center) 0%, var(--bg-radial-outer) 100%);
+      color: var(--text-main);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      padding: 24px 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-yellow);
+      text-shadow: 0 0 10px var(--accent-yellow-glow);
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #a0a0a0;
+      margin-top: 4px;
+    }
+
+    /* Pantalla Central de Resultados */
+    .display-card {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-yellow);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 360px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 15px var(--accent-yellow-glow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #888;
+    }
+
+    .value {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--fluor-cyan);
+      text-shadow: 0 0 12px var(--fluor-cyan-glow);
+      min-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-gps {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    /* Botón Animado Flúor */
+    .btn-container {
+      width: 100%;
+      max-width: 360px;
+      margin-bottom: 20px;
+    }
+
+    .btn-query {
+      width: 100%;
+      padding: 18px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #000;
+      background: var(--accent-yellow);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 0 20px var(--accent-yellow-glow);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .btn-query:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 35px var(--accent-yellow);
+    }
+
+    .btn-query.loading {
+      animation: pulse 1s infinite alternate;
+      color: #222;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 15px var(--accent-yellow-glow);
+      }
+      100% {
+        box-shadow: 0 0 35px var(--fluor-cyan), 0 0 15px var(--accent-yellow);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Reverse Wherigo</h1>
+      <div class="subtitle">Benimámet Geocaching</div>
+    </header>
+
+    <main class="display-card">
+      <div class="label">Distancia al Contenedor</div>
+      <div id="distancia-display" class="value">-- m</div>
+      <div id="status-display" class="status-gps">GPS preparado</div>
+    </main>
+
+    <footer class="btn-container">
+      <button id="btn-consultar" class="btn-query" onclick="obtenerUbicacionGPS()">Consultar Metros</button>
+    </footer>
+  </div>
+
+  <script>
+    let mapaDistancias = {};
+
+    // 1. Cargar el mapa de hashes al abrir la web
+    fetch('distancias.json')
+      .then(res => res.json())
+      .then(data => {
+        mapaDistancias = data;
+        document.getElementById("status-display").innerText = "Base de datos lista.";
+      })
+      .catch(err => {
+        document.getElementById("status-display").innerText = "Error cargando archivo JSON.";
+      });
+
+    // 2. Hash SHA-256
+    async function generarSHA256(texto) {
+      const msgBuffer = new TextEncoder().encode(texto);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // 3. Capturar GPS
+    function obtenerUbicacionGPS() {
+      const btn = document.getElementById("btn-consultar");
+      const status = document.getElementById("status-display");
+
+      btn.classList.add("loading");
+      status.innerText = "Obteniendo señal GPS...";
+
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          async (posicion) => {
+            const lat = posicion.coords.latitude;
+            const lon = posicion.coords.longitude;
+            await procesarCoordenadas(lat, lon);
+            btn.classList.remove("loading");
+          },
+          (error) => {
+            btn.classList.remove("loading");
+            status.innerText = "Error: Activa la ubicación GPS.";
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      } else {
+        btn.classList.remove("loading");
+        status.innerText = "Navegador no compatible con GPS.";
+      }
+    }
+
+    // 4. Buscar metros en el JSON
+    async function procesarCoordenadas(lat, lon) {
+      const celdaStr = `${lat.toFixed(5)},${lon.toFixed(5)}`;
+      const hashCelda = await generarSHA256(celdaStr);
+      const displayMetros = document.getElementById("distancia-display");
+      const status = document.getElementById("status-display");
+
+      if (hashCelda in mapaDistancias) {
+        const metros = mapaDistancias[hashCelda];
+        
+        if (metros <= 3) {
+          displayMetros.innerText = "¡AQUÍ ES!";
+          displayMetros.style.color = "#ffee00";
+          status.innerText = "Has llegado al destino final.";
+        } else {
+          displayMetros.innerText = `${metros} m`;
+          displayMetros.style.color = "#00f3ff";
+          status.innerText = "Ubicación confirmada.";
+        }
+      } else {
+        displayMetros.innerText = "---";
+        displayMetros.style.color = "#ff4444";
+        status.innerText = "Fuera de la zona de juego (700m).";
+      }
+    }
+  </script>
+</body>
+</html>
