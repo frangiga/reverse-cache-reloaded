@@ -26,7 +26,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      overflow-y: auto;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: radial-gradient(circle at 50% 30%, var(--bg-radial-center) 0%, var(--bg-radial-outer) 100%);
       color: var(--text-main);
@@ -38,8 +38,8 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      height: 100%;
-      padding: 16px 16px 20px 16px;
+      min-height: 100vh;
+      padding: 16px;
     }
 
     header {
@@ -96,14 +96,14 @@
       border-radius: 24px;
       width: 100%;
       max-width: 360px;
-      padding: 28px 20px;
+      padding: 24px 20px;
       text-align: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
                   0 0 20px var(--accent-orange-glow),
                   inset 0 0 15px rgba(255, 102, 0, 0.3);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
     .label {
@@ -120,7 +120,7 @@
       font-weight: 900;
       color: var(--fluor-cyan);
       text-shadow: 0 0 18px var(--fluor-cyan-glow), 0 0 30px var(--fluor-cyan-glow);
-      min-height: 4.2rem;
+      min-height: 4rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -133,6 +133,20 @@
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
 
+    /* Caja para ver diagnósticos directo en la pantalla del móvil */
+    .debug-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px dashed #ff6600;
+      border-radius: 12px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #00f3ff;
+      text-align: left;
+      word-break: break-all;
+      margin-top: 6px;
+    }
+
     .footer-section {
       display: flex;
       flex-direction: column;
@@ -140,6 +154,7 @@
       width: 100%;
       max-width: 360px;
       gap: 14px;
+      margin-top: 10px;
       margin-bottom: 5px;
     }
 
@@ -166,19 +181,6 @@
       box-shadow: 0 0 40px var(--accent-orange);
     }
 
-    .btn-query.loading {
-      animation: pulse 1s infinite alternate;
-    }
-
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 15px var(--accent-orange-glow);
-      }
-      100% {
-        box-shadow: 0 0 35px var(--fluor-cyan), 0 0 20px var(--accent-orange);
-      }
-    }
-
     footer {
       font-size: 0.85rem;
       color: #a0aec0;
@@ -190,11 +192,6 @@
       text-decoration: none;
       font-weight: 700;
       text-shadow: 0 0 8px var(--accent-orange-glow);
-      transition: color 0.2s ease;
-    }
-
-    footer a:hover {
-      color: var(--fluor-cyan);
     }
   </style>
 </head>
@@ -211,7 +208,12 @@
     <main class="display-card">
       <div class="label">Distancia al Final</div>
       <div id="distancia-display" class="value">-- m</div>
-      <div id="status-display" class="status-gps">GPS preparado</div>
+      <div id="status-display" class="status-gps">Cargando base de datos...</div>
+
+      <!-- Consola de depuración en pantalla -->
+      <div id="debug-info" class="debug-box">
+        [Info] Esperando datos de ubicación...
+      </div>
     </main>
 
     <div class="footer-section">
@@ -224,16 +226,29 @@
 
   <script>
     let mapaDistancias = {};
+    let jsonCargado = false;
 
-    // Carga de la base de datos JSON
+    function logDebug(msg) {
+      const debugDiv = document.getElementById("debug-info");
+      debugDiv.innerHTML += "<br>" + msg;
+    }
+
+    // Cargar JSON
     fetch('distancias.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP Status: " + res.status);
+        return res.json();
+      })
       .then(data => {
         mapaDistancias = data;
+        jsonCargado = true;
+        const totalKeys = Object.keys(data).length;
         document.getElementById("status-display").innerText = "Base de datos lista.";
+        document.getElementById("debug-info").innerHTML = `[OK] JSON cargado (${totalKeys} celdas).`;
       })
       .catch(err => {
-        document.getElementById("status-display").innerText = "Error cargando archivo JSON.";
+        document.getElementById("status-display").innerText = "Error cargando distancias.json";
+        document.getElementById("debug-info").innerHTML = `[ERROR JSON] ${err.message}`;
       });
 
     async function generarSHA256(texto) {
@@ -244,11 +259,14 @@
     }
 
     function obtenerUbicacionGPS() {
-      const btn = document.getElementById("btn-consultar");
       const status = document.getElementById("status-display");
 
-      btn.classList.add("loading");
-      status.innerText = "Obteniendo señal GPS...";
+      if (!jsonCargado) {
+        status.innerText = "Espera a que cargue el JSON...";
+        return;
+      }
+
+      status.innerText = "Obteniendo GPS...";
 
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
@@ -256,24 +274,21 @@
             const lat = posicion.coords.latitude;
             const lon = posicion.coords.longitude;
             await procesarCoordenadas(lat, lon);
-            btn.classList.remove("loading");
           },
           (error) => {
-            btn.classList.remove("loading");
-            status.innerText = "Error: Activa la ubicación GPS.";
+            status.innerText = "Error GPS: " + error.message;
+            logDebug(`[ERROR GPS] Código ${error.code}: ${error.message}`);
           },
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
-        btn.classList.remove("loading");
-        status.innerText = "Navegador no compatible con GPS.";
+        status.innerText = "GPS no compatible.";
       }
     }
 
     async function procesarCoordenadas(lat, lon) {
       const PASO = 0.00005;
 
-      // Alineación estricta con múltiplos de 0.00005
       const latGrid = (Math.round(lat / PASO) * PASO).toFixed(5);
       const lonGrid = (Math.round(lon / PASO) * PASO).toFixed(5);
 
@@ -282,6 +297,13 @@
       
       const displayMetros = document.getElementById("distancia-display");
       const status = document.getElementById("status-display");
+
+      // Diagnóstico visual en pantalla
+      document.getElementById("debug-info").innerHTML = 
+        `<b>GPS Real:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}<br>` +
+        `<b>Celda Grid:</b> ${celdaStr}<br>` +
+        `<b>Hash SHA-256:</b> ${hashCelda.substring(0, 12)}...<br>` +
+        `<b>¿Hash en JSON?:</b> ${hashCelda in mapaDistancias ? "SÍ (Encontrado)" : "NO (No existe)"}`;
 
       if (hashCelda in mapaDistancias) {
         const metros = mapaDistancias[hashCelda];
