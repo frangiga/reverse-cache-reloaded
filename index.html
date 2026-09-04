@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>REVERSE CACHÉ RELOADED - GCBXGZR</title>
   <style>
     :root {
@@ -21,12 +21,14 @@
       margin: 0;
       padding: 0;
       user-select: none;
+      -webkit-user-select: none;
     }
 
     html, body {
       width: 100%;
       height: 100%;
-      overflow-y: auto;
+      height: 100dvh;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: radial-gradient(circle at 50% 30%, var(--bg-radial-center) 0%, var(--bg-radial-outer) 100%);
       color: var(--text-main);
@@ -38,8 +40,9 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      min-height: 100vh;
-      padding: 16px;
+      height: 100%;
+      height: 100dvh;
+      padding: clamp(12px, 2.5vh, 20px) 16px;
     }
 
     header {
@@ -47,19 +50,19 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin-top: 5px;
+      margin-top: clamp(2px, 1vh, 10px);
     }
 
     .multi-logo {
-      width: 95px;
-      height: 95px;
+      width: clamp(70px, 13vh, 100px);
+      height: clamp(70px, 13vh, 100px);
       object-fit: contain;
       filter: drop-shadow(0 0 2px #ff6600) drop-shadow(0 0 12px var(--accent-orange-glow));
-      margin-bottom: 8px;
+      margin-bottom: clamp(4px, 1vh, 8px);
     }
 
     .title-main {
-      font-size: 1.5rem;
+      font-size: clamp(1.2rem, 3.5vh, 1.6rem);
       font-weight: 900;
       letter-spacing: 3px;
       color: var(--accent-orange);
@@ -69,7 +72,7 @@
     }
 
     .title-sub {
-      font-size: 1.3rem;
+      font-size: clamp(1.0rem, 3vh, 1.3rem);
       font-weight: 800;
       letter-spacing: 4px;
       color: var(--accent-orange);
@@ -80,12 +83,12 @@
     }
 
     .gc-code {
-      font-size: 1.15rem;
+      font-size: clamp(0.95rem, 2.5vh, 1.15rem);
       font-weight: 900;
       letter-spacing: 3px;
       color: #f0f3f6;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-      margin-top: 6px;
+      margin-top: clamp(2px, 0.8vh, 6px);
     }
 
     .display-card {
@@ -96,18 +99,19 @@
       border-radius: 24px;
       width: 100%;
       max-width: 360px;
-      padding: 24px 20px;
+      padding: clamp(20px, 4vh, 32px) 20px;
       text-align: center;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
                   0 0 20px var(--accent-orange-glow),
                   inset 0 0 15px rgba(255, 102, 0, 0.3);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: clamp(10px, 2vh, 16px);
+      margin: auto 0;
     }
 
     .label {
-      font-size: 1.05rem;
+      font-size: clamp(0.95rem, 2.2vh, 1.1rem);
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -116,34 +120,21 @@
     }
 
     .value {
-      font-size: 3.2rem;
+      font-size: clamp(2.8rem, 7vh, 3.8rem);
       font-weight: 900;
       color: var(--fluor-cyan);
       text-shadow: 0 0 18px var(--fluor-cyan-glow), 0 0 30px var(--fluor-cyan-glow);
-      min-height: 4rem;
+      min-height: clamp(3.5rem, 8vh, 4.5rem);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .status-gps {
-      font-size: 0.9rem;
+      font-size: clamp(0.8rem, 2vh, 0.95rem);
       font-weight: 600;
       color: #e2e8f0;
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
-    }
-
-    .debug-box {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px dashed #ff6600;
-      border-radius: 12px;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 0.75rem;
-      color: #00f3ff;
-      text-align: left;
-      word-break: break-all;
-      margin-top: 6px;
     }
 
     .footer-section {
@@ -152,15 +143,14 @@
       align-items: center;
       width: 100%;
       max-width: 360px;
-      gap: 14px;
-      margin-top: 10px;
-      margin-bottom: 5px;
+      gap: clamp(8px, 1.8vh, 14px);
+      margin-bottom: clamp(2px, 1vh, 8px);
     }
 
     .btn-query {
       width: 100%;
-      padding: 18px;
-      font-size: 1.25rem;
+      padding: clamp(14px, 2.2vh, 18px);
+      font-size: clamp(1.1rem, 2.5vh, 1.25rem);
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -171,8 +161,9 @@
       cursor: pointer;
       outline: none;
       box-shadow: 0 0 25px var(--accent-orange-glow);
-      transition: all 0.2s ease;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn-query:active {
@@ -181,7 +172,7 @@
     }
 
     footer {
-      font-size: 0.85rem;
+      font-size: clamp(0.75rem, 1.8vh, 0.85rem);
       color: #a0aec0;
       letter-spacing: 1px;
     }
@@ -205,13 +196,9 @@
     </header>
 
     <main class="display-card">
-      <div class="label">Distancia al Final</div>
+      <div class="label">DISTANCIA AL GZ</div>
       <div id="distancia-display" class="value">-- m</div>
       <div id="status-display" class="status-gps">Pulsa para consultar ubicación</div>
-
-      <div id="debug-info" class="debug-box">
-        [Sistema] Esperando consulta de GPS...
-      </div>
     </main>
 
     <div class="footer-section">
@@ -223,13 +210,11 @@
   </div>
 
   <script>
-    // Configuración del área del juego
     const LAT_INIT = 39.49970;
     const LON_INIT = -0.41990;
     const RADIO_JUEGO_METROS = 700;
     const PASO = 0.00005;
 
-    // Distancia en metros usando fórmula Haversine
     function calcularHaversine(lat1, lon1, lat2, lon2) {
       const R = 6371000;
       const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -241,79 +226,52 @@
       return Math.round(R * c);
     }
 
-    // Generador de Hash SHA-256 nativo
-    async function generarSHA256(texto) {
-      const msgBuffer = new TextEncoder().encode(texto);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
     function obtenerUbicacionGPS() {
       const status = document.getElementById("status-display");
       status.innerText = "Obteniendo GPS...";
 
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
-          async (posicion) => {
+          (posicion) => {
             const lat = posicion.coords.latitude;
             const lon = posicion.coords.longitude;
-            await procesarCoordenadas(lat, lon);
+            procesarCoordenadas(lat, lon);
           },
           (error) => {
-            status.innerText = "Error GPS: " + error.message;
-            document.getElementById("debug-info").innerHTML = `[ERROR GPS] Código ${error.code}: ${error.message}`;
+            status.innerText = "Error GPS: Activa la ubicación";
           },
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
-        status.innerText = "GPS no compatible en este navegador.";
+        status.innerText = "GPS no compatible.";
       }
     }
 
-    async function procesarCoordenadas(lat, lon) {
+    function procesarCoordenadas(lat, lon) {
       const displayMetros = document.getElementById("distancia-display");
       const status = document.getElementById("status-display");
 
-      // Comprobar si está dentro del radio de 700m desde el origen
       const distAlOrigen = calcularHaversine(lat, lon, LAT_INIT, LON_INIT);
-
-      // Mapeo a la rejilla alineada
-      const latGrid = (Math.round(lat / PASO) * PASO).toFixed(5);
-      const lonGrid = (Math.round(lon / PASO) * PASO).toFixed(5);
-      const celdaStr = `${latGrid},${lonGrid}`;
-      const hashCelda = await generarSHA256(celdaStr);
 
       if (distAlOrigen > RADIO_JUEGO_METROS) {
         displayMetros.innerText = "---";
         displayMetros.style.color = "#ff4444";
         status.innerText = "Fuera de la zona de juego (700m).";
-        
-        document.getElementById("debug-info").innerHTML = 
-          `<b>GPS Real:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}<br>` +
-          `<b>Celda Grid:</b> ${celdaStr}<br>` +
-          `<b>Hash SHA-256:</b> ${hashCelda.substring(0, 12)}...<br>` +
-          `<b>Dist. Origen:</b> ${distAlOrigen} m (Límite: ${RADIO_JUEGO_METROS}m)`;
         return;
       }
 
-      // Calcular distancia en tiempo real respecto al objetivo
-      // Las coordenadas finales están representadas internamente por la celda de convergencia
+      const latGrid = Math.round(lat / PASO) * PASO;
+      const lonGrid = Math.round(lon / PASO) * PASO;
+
       const latFinalGrid = 39.50015;
       const lonFinalGrid = -0.41575;
       
-      const metros = calcularHaversine(parseFloat(latGrid), parseFloat(lonGrid), latFinalGrid, lonFinalGrid);
-
-      document.getElementById("debug-info").innerHTML = 
-        `<b>GPS Real:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}<br>` +
-        `<b>Celda Grid:</b> ${celdaStr}<br>` +
-        `<b>Hash SHA-256:</b> ${hashCelda.substring(0, 12)}...<br>` +
-        `<b>Zona de juego:</b> OK (${distAlOrigen}m del origen)`;
+      const metros = calcularHaversine(latGrid, lonGrid, latFinalGrid, lonFinalGrid);
 
       if (metros <= 5) {
         displayMetros.innerText = "¡AQUÍ ES!";
         displayMetros.style.color = "#ff6600";
-        status.innerText = "Has llegado al destino final.";
+        status.innerText = "Has llegado al GZ final.";
       } else {
         displayMetros.innerText = `${metros} m`;
         displayMetros.style.color = "#00f3ff";
