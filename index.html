@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>REVERSE CACHE RELOADED - GCBXGZR</title>
+  <title>REVERSE CACHÉ RELOADED - GCBXGZR</title>
   <style>
     :root {
       --bg-radial-center: #2a2d32;
@@ -39,72 +39,71 @@
       align-items: center;
       width: 100%;
       height: 100%;
-      padding: 20px 16px;
+      padding: 16px 16px 20px 16px;
     }
 
-    /* Cabecera con Logo Circular SVG */
+    /* Cabecera Reestructurada */
     header {
       display: flex;
       flex-direction: column;
       align-items: center;
+      text-align: center;
       margin-top: 5px;
     }
 
-    .logo-container {
-      position: relative;
-      width: 160px;
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .multi-logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px var(--accent-yellow-glow));
+      margin-bottom: 8px;
     }
 
-    .multi-icon {
-      position: absolute;
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      filter: drop-shadow(0 0 10px var(--accent-yellow-glow));
-    }
-
-    .curved-text-svg {
-      width: 160px;
-      height: 160px;
-    }
-
-    .curved-text-svg text {
-      fill: var(--accent-yellow);
-      font-size: 10.8px;
-      font-weight: 800;
-      letter-spacing: 2px;
+    .title-main {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: var(--accent-yellow);
       text-transform: uppercase;
-      text-shadow: 0 0 6px var(--accent-yellow-glow);
+      text-shadow: 0 0 10px var(--accent-yellow-glow);
+      line-height: 1.1;
+    }
+
+    .title-sub {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--accent-yellow);
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--accent-yellow-glow);
+      margin-top: 2px;
+      line-height: 1.1;
     }
 
     .gc-code {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 900;
       letter-spacing: 3px;
       color: var(--text-main);
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-      margin-top: 2px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+      margin-top: 6px;
     }
 
-    /* Panel de Consulta Ampliado y Luminoso */
+    /* Panel de Consulta */
     .display-card {
       background: var(--card-bg);
       border: 3px solid var(--accent-yellow);
       border-radius: 24px;
       width: 100%;
       max-width: 360px;
-      padding: 32px 20px;
+      padding: 28px 20px;
       text-align: center;
       box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), 
                   0 0 15px var(--accent-yellow-glow),
                   inset 0 0 20px var(--accent-yellow-glow);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .label {
@@ -121,7 +120,7 @@
       font-weight: 900;
       color: var(--fluor-cyan);
       text-shadow: 0 0 18px var(--fluor-cyan-glow), 0 0 30px var(--fluor-cyan-glow);
-      min-height: 4.5rem;
+      min-height: 4.2rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -141,8 +140,8 @@
       align-items: center;
       width: 100%;
       max-width: 360px;
-      gap: 16px;
-      margin-bottom: 10px;
+      gap: 14px;
+      margin-bottom: 5px;
     }
 
     .btn-query {
@@ -204,19 +203,9 @@
 
   <div class="container">
     <header>
-      <div class="logo-container">
-        <!-- SVG para texto curvo en círculo -->
-        <svg class="curved-text-svg" viewBox="0 0 160 160">
-          <path id="textPath" d="M 80, 80 m -62, 0 a 62,62 0 1,1 124,0 a 62,62 0 1,1 -124,0" fill="none" />
-          <text>
-            <textPath href="#textPath" startOffset="50%" text-anchor="middle">
-              REVERSE CACHE RELOADED
-            </textPath>
-          </text>
-        </svg>
-        <!-- Icono oficial Multi-Cache de Geocaching.com -->
-        <img class="multi-icon" src="https://www.geocaching.com/images/wpttypes/large/3.png" alt="Multi-Cache Icon">
-      </div>
+      <img class="multi-logo" src="https://frangiga.github.io/reverse-cache-reloaded/Multi.png" alt="Multi Cache Logo">
+      <div class="title-main">REVERSE CACHÉ</div>
+      <div class="title-sub">RELOADED</div>
       <div class="gc-code">GCBXGZR</div>
     </header>
 
