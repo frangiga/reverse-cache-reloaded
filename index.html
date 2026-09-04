@@ -6,13 +6,14 @@
   <title>REVERSE CACHÉ RELOADED - GCBXGZR</title>
   <style>
     :root {
-      --bg-radial-center: #3a3f47;
-      --bg-radial-outer: #1c1e22;
-      --accent-orange: #ff6600;
-      --accent-orange-glow: rgba(255, 102, 0, 0.85);
+      --bg-radial-center: #323740;
+      --bg-radial-outer: #16181c;
+      --accent-orange: #ff7700;
+      --accent-orange-light: #ff9933;
+      --accent-orange-glow: rgba(255, 119, 0, 0.45);
       --fluor-cyan: #00f3ff;
-      --fluor-cyan-glow: rgba(0, 243, 255, 0.75);
-      --card-bg: rgba(24, 27, 32, 0.85);
+      --fluor-cyan-glow: rgba(0, 243, 255, 0.6);
+      --card-bg: rgba(20, 23, 28, 0.85);
       --text-main: #ffffff;
     }
 
@@ -57,53 +58,56 @@
       width: clamp(70px, 13vh, 100px);
       height: clamp(70px, 13vh, 100px);
       object-fit: contain;
-      filter: drop-shadow(0 0 2px #ff6600) drop-shadow(0 0 12px var(--accent-orange-glow));
+      filter: drop-shadow(0 0 8px var(--accent-orange-glow));
       margin-bottom: clamp(4px, 1vh, 8px);
     }
 
     .title-main {
-      font-size: clamp(1.2rem, 3.5vh, 1.6rem);
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: var(--accent-orange);
+      font-size: clamp(1.2rem, 3.2vh, 1.5rem);
+      font-weight: 800;
+      letter-spacing: 4px;
+      background: linear-gradient(180deg, #ffffff 0%, var(--accent-orange-light) 40%, var(--accent-orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       text-transform: uppercase;
-      text-shadow: 0 0 12px var(--accent-orange-glow);
+      filter: drop-shadow(0 2px 8px var(--accent-orange-glow));
       line-height: 1.1;
     }
 
     .title-sub {
-      font-size: clamp(1.0rem, 3vh, 1.3rem);
-      font-weight: 800;
-      letter-spacing: 4px;
+      font-size: clamp(0.95rem, 2.6vh, 1.2rem);
+      font-weight: 700;
+      letter-spacing: 6px;
       color: var(--accent-orange);
       text-transform: uppercase;
       text-shadow: 0 0 10px var(--accent-orange-glow);
-      margin-top: 2px;
+      margin-top: 3px;
       line-height: 1.1;
+      opacity: 0.95;
     }
 
     .gc-code {
-      font-size: clamp(0.95rem, 2.5vh, 1.15rem);
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: #f0f3f6;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-      margin-top: clamp(2px, 0.8vh, 6px);
+      font-size: clamp(0.9rem, 2.2vh, 1.05rem);
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #d1d5db;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      margin-top: clamp(4px, 1vh, 8px);
     }
 
     .display-card {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 2px solid var(--accent-orange);
-      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 119, 0, 0.6);
+      border-radius: 20px;
       width: 100%;
-      max-width: 360px;
-      padding: clamp(20px, 4vh, 32px) 20px;
+      max-width: 350px;
+      padding: clamp(20px, 3.8vh, 30px) 20px;
       text-align: center;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
-                  0 0 20px var(--accent-orange-glow),
-                  inset 0 0 15px rgba(255, 102, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 
+                  0 0 15px var(--accent-orange-glow),
+                  inset 0 0 12px rgba(255, 119, 0, 0.15);
       display: flex;
       flex-direction: column;
       gap: clamp(10px, 2vh, 16px);
@@ -111,30 +115,31 @@
     }
 
     .label {
-      font-size: clamp(0.95rem, 2.2vh, 1.1rem);
-      font-weight: 700;
+      font-size: clamp(0.85rem, 2vh, 1rem);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--accent-orange);
-      text-shadow: 0 0 8px var(--accent-orange-glow);
+      letter-spacing: 3px;
+      color: var(--accent-orange-light);
+      text-shadow: 0 0 6px var(--accent-orange-glow);
     }
 
     .value {
       font-size: clamp(2.8rem, 7vh, 3.8rem);
-      font-weight: 900;
+      font-weight: 800;
       color: var(--fluor-cyan);
-      text-shadow: 0 0 18px var(--fluor-cyan-glow), 0 0 30px var(--fluor-cyan-glow);
+      text-shadow: 0 0 14px var(--fluor-cyan-glow), 0 0 28px var(--fluor-cyan-glow);
       min-height: clamp(3.5rem, 8vh, 4.5rem);
       display: flex;
       align-items: center;
       justify-content: center;
+      letter-spacing: 1px;
     }
 
     .status-gps {
-      font-size: clamp(0.8rem, 2vh, 0.95rem);
-      font-weight: 600;
-      color: #e2e8f0;
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+      font-size: clamp(0.8rem, 1.8vh, 0.9rem);
+      font-weight: 500;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
     }
 
     .footer-section {
@@ -142,46 +147,50 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 360px;
+      max-width: 350px;
       gap: clamp(8px, 1.8vh, 14px);
       margin-bottom: clamp(2px, 1vh, 8px);
     }
 
     .btn-query {
       width: 100%;
-      padding: clamp(14px, 2.2vh, 18px);
-      font-size: clamp(1.1rem, 2.5vh, 1.25rem);
-      font-weight: 800;
+      padding: clamp(14px, 2vh, 17px);
+      font-size: clamp(1rem, 2.3vh, 1.15rem);
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       color: #ffffff;
-      background: linear-gradient(135deg, #ff7700 0%, #e65c00 100%);
-      border: none;
+      background: linear-gradient(135deg, #ff8800 0%, #d95500 100%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50px;
       cursor: pointer;
       outline: none;
-      box-shadow: 0 0 25px var(--accent-orange-glow);
+      box-shadow: 0 6px 20px var(--accent-orange-glow);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
       -webkit-tap-highlight-color: transparent;
     }
 
     .btn-query:active {
-      transform: scale(0.96);
-      box-shadow: 0 0 40px var(--accent-orange);
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px var(--accent-orange-glow);
     }
 
     footer {
-      font-size: clamp(0.75rem, 1.8vh, 0.85rem);
-      color: #a0aec0;
+      font-size: clamp(0.75rem, 1.6vh, 0.82rem);
+      color: #64748b;
       letter-spacing: 1px;
     }
 
     footer a {
-      color: var(--accent-orange);
+      color: var(--accent-orange-light);
       text-decoration: none;
-      font-weight: 700;
-      text-shadow: 0 0 8px var(--accent-orange-glow);
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--fluor-cyan);
     }
   </style>
 </head>
@@ -270,7 +279,7 @@
 
       if (metros <= 5) {
         displayMetros.innerText = "¡AQUÍ ES!";
-        displayMetros.style.color = "#ff6600";
+        displayMetros.style.color = "#ff7700";
         status.innerText = "Has llegado al GZ final.";
       } else {
         displayMetros.innerText = `${metros} m`;
