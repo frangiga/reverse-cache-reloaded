@@ -53,9 +53,12 @@
     .multi-logo {
       width: 95px;
       height: 95px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 16px var(--accent-orange-glow));
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 0 20px var(--accent-orange-glow), 0 0 10px var(--accent-orange);
       margin-bottom: 8px;
+      outline: 1px solid transparent;
+      transform: scale(0.98);
     }
 
     .title-main {
