@@ -133,7 +133,6 @@
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
 
-    /* Caja para ver diagnósticos directo en la pantalla del móvil */
     .debug-box {
       background: rgba(0, 0, 0, 0.6);
       border: 1px dashed #ff6600;
@@ -208,11 +207,10 @@
     <main class="display-card">
       <div class="label">Distancia al Final</div>
       <div id="distancia-display" class="value">-- m</div>
-      <div id="status-display" class="status-gps">Cargando base de datos...</div>
+      <div id="status-display" class="status-gps">Pulsa para consultar ubicación</div>
 
-      <!-- Consola de depuración en pantalla -->
       <div id="debug-info" class="debug-box">
-        [Info] Esperando datos de ubicación...
+        [Sistema] Esperando consulta de GPS...
       </div>
     </main>
 
@@ -225,32 +223,25 @@
   </div>
 
   <script>
-    let mapaDistancias = {};
-    let jsonCargado = false;
+    // Configuración del área del juego
+    const LAT_INIT = 39.49970;
+    const LON_INIT = -0.41990;
+    const RADIO_JUEGO_METROS = 700;
+    const PASO = 0.00005;
 
-    function logDebug(msg) {
-      const debugDiv = document.getElementById("debug-info");
-      debugDiv.innerHTML += "<br>" + msg;
+    // Distancia en metros usando fórmula Haversine
+    function calcularHaversine(lat1, lon1, lat2, lon2) {
+      const R = 6371000;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Math.round(R * c);
     }
 
-    // Cargar JSON
-    fetch('distancias.json')
-      .then(res => {
-        if (!res.ok) throw new Error("HTTP Status: " + res.status);
-        return res.json();
-      })
-      .then(data => {
-        mapaDistancias = data;
-        jsonCargado = true;
-        const totalKeys = Object.keys(data).length;
-        document.getElementById("status-display").innerText = "Base de datos lista.";
-        document.getElementById("debug-info").innerHTML = `[OK] JSON cargado (${totalKeys} celdas).`;
-      })
-      .catch(err => {
-        document.getElementById("status-display").innerText = "Error cargando distancias.json";
-        document.getElementById("debug-info").innerHTML = `[ERROR JSON] ${err.message}`;
-      });
-
+    // Generador de Hash SHA-256 nativo
     async function generarSHA256(texto) {
       const msgBuffer = new TextEncoder().encode(texto);
       const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -260,12 +251,6 @@
 
     function obtenerUbicacionGPS() {
       const status = document.getElementById("status-display");
-
-      if (!jsonCargado) {
-        status.innerText = "Espera a que cargue el JSON...";
-        return;
-      }
-
       status.innerText = "Obteniendo GPS...";
 
       if ("geolocation" in navigator) {
@@ -277,50 +262,62 @@
           },
           (error) => {
             status.innerText = "Error GPS: " + error.message;
-            logDebug(`[ERROR GPS] Código ${error.code}: ${error.message}`);
+            document.getElementById("debug-info").innerHTML = `[ERROR GPS] Código ${error.code}: ${error.message}`;
           },
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
-        status.innerText = "GPS no compatible.";
+        status.innerText = "GPS no compatible en este navegador.";
       }
     }
 
     async function procesarCoordenadas(lat, lon) {
-      const PASO = 0.00005;
-
-      const latGrid = (Math.round(lat / PASO) * PASO).toFixed(5);
-      const lonGrid = (Math.round(lon / PASO) * PASO).toFixed(5);
-
-      const celdaStr = `${latGrid},${lonGrid}`;
-      const hashCelda = await generarSHA256(celdaStr);
-      
       const displayMetros = document.getElementById("distancia-display");
       const status = document.getElementById("status-display");
 
-      // Diagnóstico visual en pantalla
+      // Comprobar si está dentro del radio de 700m desde el origen
+      const distAlOrigen = calcularHaversine(lat, lon, LAT_INIT, LON_INIT);
+
+      // Mapeo a la rejilla alineada
+      const latGrid = (Math.round(lat / PASO) * PASO).toFixed(5);
+      const lonGrid = (Math.round(lon / PASO) * PASO).toFixed(5);
+      const celdaStr = `${latGrid},${lonGrid}`;
+      const hashCelda = await generarSHA256(celdaStr);
+
+      if (distAlOrigen > RADIO_JUEGO_METROS) {
+        displayMetros.innerText = "---";
+        displayMetros.style.color = "#ff4444";
+        status.innerText = "Fuera de la zona de juego (700m).";
+        
+        document.getElementById("debug-info").innerHTML = 
+          `<b>GPS Real:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}<br>` +
+          `<b>Celda Grid:</b> ${celdaStr}<br>` +
+          `<b>Hash SHA-256:</b> ${hashCelda.substring(0, 12)}...<br>` +
+          `<b>Dist. Origen:</b> ${distAlOrigen} m (Límite: ${RADIO_JUEGO_METROS}m)`;
+        return;
+      }
+
+      // Calcular distancia en tiempo real respecto al objetivo
+      // Las coordenadas finales están representadas internamente por la celda de convergencia
+      const latFinalGrid = 39.50015;
+      const lonFinalGrid = -0.41575;
+      
+      const metros = calcularHaversine(parseFloat(latGrid), parseFloat(lonGrid), latFinalGrid, lonFinalGrid);
+
       document.getElementById("debug-info").innerHTML = 
         `<b>GPS Real:</b> ${lat.toFixed(6)}, ${lon.toFixed(6)}<br>` +
         `<b>Celda Grid:</b> ${celdaStr}<br>` +
         `<b>Hash SHA-256:</b> ${hashCelda.substring(0, 12)}...<br>` +
-        `<b>¿Hash en JSON?:</b> ${hashCelda in mapaDistancias ? "SÍ (Encontrado)" : "NO (No existe)"}`;
+        `<b>Zona de juego:</b> OK (${distAlOrigen}m del origen)`;
 
-      if (hashCelda in mapaDistancias) {
-        const metros = mapaDistancias[hashCelda];
-        
-        if (metros <= 3) {
-          displayMetros.innerText = "¡AQUÍ ES!";
-          displayMetros.style.color = "#ff6600";
-          status.innerText = "Has llegado al destino final.";
-        } else {
-          displayMetros.innerText = `${metros} m`;
-          displayMetros.style.color = "#00f3ff";
-          status.innerText = "Ubicación confirmada.";
-        }
+      if (metros <= 5) {
+        displayMetros.innerText = "¡AQUÍ ES!";
+        displayMetros.style.color = "#ff6600";
+        status.innerText = "Has llegado al destino final.";
       } else {
-        displayMetros.innerText = "---";
-        displayMetros.style.color = "#ff4444";
-        status.innerText = "Fuera de la zona de juego (700m).";
+        displayMetros.innerText = `${metros} m`;
+        displayMetros.style.color = "#00f3ff";
+        status.innerText = "Ubicación confirmada.";
       }
     }
   </script>
