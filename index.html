@@ -42,7 +42,6 @@
       padding: 16px 16px 20px 16px;
     }
 
-    /* Cabecera Reestructurada Naranja */
     header {
       display: flex;
       flex-direction: column;
@@ -89,7 +88,6 @@
       margin-top: 6px;
     }
 
-    /* Panel de Consulta Estilo Moderno */
     .display-card {
       background: var(--card-bg);
       backdrop-filter: blur(10px);
@@ -135,7 +133,6 @@
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
 
-    /* Botón Naranja Neón */
     .footer-section {
       display: flex;
       flex-direction: column;
@@ -182,7 +179,6 @@
       }
     }
 
-    /* Footer con créditos */
     footer {
       font-size: 0.85rem;
       color: #a0aec0;
@@ -274,8 +270,14 @@
     }
 
     async function procesarCoordenadas(lat, lon) {
-      const celdaStr = `${lat.toFixed(5)},${lon.toFixed(5)}`;
+      // Ajuste exacto al paso de grilla (0.00005)
+      const PASO = 0.00005;
+      const latGrid = (Math.round(lat / PASO) * PASO).toFixed(5);
+      const lonGrid = (Math.round(lon / PASO) * PASO).toFixed(5);
+
+      const celdaStr = `${latGrid},${lonGrid}`;
       const hashCelda = await generarSHA256(celdaStr);
+      
       const displayMetros = document.getElementById("distancia-display");
       const status = document.getElementById("status-display");
 
