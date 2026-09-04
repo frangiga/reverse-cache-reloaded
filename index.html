@@ -59,17 +59,13 @@
       justify-content: center;
       align-items: center;
       margin-bottom: clamp(4px, 1vh, 8px);
-      /* Glow difuminado para disimular los bordes del logo */
-      filter: drop-shadow(0 0 12px var(--accent-orange-glow));
+      filter: drop-shadow(0 0 10px var(--accent-orange-glow));
     }
 
     .multi-logo {
       width: clamp(70px, 13vh, 100px);
       height: clamp(70px, 13vh, 100px);
       object-fit: contain;
-      /* Máscara radial para desvanecer suavemente los bordes exteriores */
-      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 68%, rgba(0,0,0,0) 98%);
-      mask-image: radial-gradient(circle, rgba(0,0,0,1) 68%, rgba(0,0,0,0) 98%);
     }
 
     .title-main {
@@ -95,11 +91,12 @@
     }
 
     .gc-code {
-      font-size: clamp(0.9rem, 2.2vh, 1.05rem);
-      font-weight: 700;
+      /* Aumentado un 30% respecto al tamaño anterior */
+      font-size: clamp(1.17rem, 2.86vh, 1.37rem);
+      font-weight: 800;
       letter-spacing: 4px;
       color: #d1d5db;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
       margin-top: clamp(4px, 1vh, 8px);
     }
 
@@ -207,7 +204,7 @@
   <div class="container">
     <header>
       <div class="multi-logo-wrapper">
-        <img class="multi-logo" src="https://frangiga.github.io/reverse-cache-reloaded/Multi.png" alt="Multi Cache Logo">
+        <img class="multi-logo" src="https://img.geocaching.com/0408071b-30c0-4641-ba83-19fcea0ec4af.png" alt="Multi Cache Logo">
       </div>
       <div class="title-main">REVERSE CACHÉ</div>
       <div class="title-sub">RELOADED</div>
