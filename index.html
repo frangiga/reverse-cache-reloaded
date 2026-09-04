@@ -54,12 +54,22 @@
       margin-top: clamp(2px, 1vh, 10px);
     }
 
+    .multi-logo-wrapper {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: clamp(4px, 1vh, 8px);
+      /* Glow difuminado para disimular los bordes del logo */
+      filter: drop-shadow(0 0 12px var(--accent-orange-glow));
+    }
+
     .multi-logo {
       width: clamp(70px, 13vh, 100px);
       height: clamp(70px, 13vh, 100px);
       object-fit: contain;
-      filter: drop-shadow(0 0 8px var(--accent-orange-glow));
-      margin-bottom: clamp(4px, 1vh, 8px);
+      /* Máscara radial para desvanecer suavemente los bordes exteriores */
+      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 68%, rgba(0,0,0,0) 98%);
+      mask-image: radial-gradient(circle, rgba(0,0,0,1) 68%, rgba(0,0,0,0) 98%);
     }
 
     .title-main {
@@ -196,7 +206,9 @@
 
   <div class="container">
     <header>
-      <img class="multi-logo" src="https://frangiga.github.io/reverse-cache-reloaded/Multi.png" alt="Multi Cache Logo">
+      <div class="multi-logo-wrapper">
+        <img class="multi-logo" src="https://frangiga.github.io/reverse-cache-reloaded/Multi.png" alt="Multi Cache Logo">
+      </div>
       <div class="title-main">REVERSE CACHÉ</div>
       <div class="title-sub">RELOADED</div>
       <div class="gc-code">GCBXGZR</div>
@@ -211,7 +223,7 @@
     <div class="footer-section">
       <button id="btn-consultar" class="btn-query" onclick="obtenerUbicacionGPS()">Consultar Metros</button>
       <footer>
-        Desarrollado por <a href="https://www.instagram.com/fran_giga/" target="_blank" rel="noopener noreferrer" cite="https://www.instagram.com/fran_giga/">fran_giga</a>
+        Desarrollado por <a href="https://www.instagram.com/fran_giga/" target="_blank" rel="noopener noreferrer">fran_giga</a>
       </footer>
     </div>
   </div>
