@@ -54,16 +54,19 @@ header {
   margin-top: clamp(2px, 1vh, 10px);
 }
 
-/* Ajustes para suavizar el perímetro del logo recortado */
+/* Máscara de desvanecimiento radial para suavizar perímetro interno y externo */
 .multi-logo {
   width: clamp(70px, 13vh, 100px);
   height: clamp(70px, 13vh, 100px);
-  object-fit: cover;
-  border-radius: 50%;
-  clip-path: circle(49.5%);
-  filter: drop-shadow(0 0 10px var(--accent-orange-glow));
-  box-shadow: 0 0 0 1px rgba(255, 119, 0, 0.2);
+  object-fit: contain;
   margin-bottom: clamp(4px, 1vh, 8px);
+  
+  /* Máscara radial que difumina el borde hacia la transparencia */
+  -webkit-mask-image: radial-gradient(circle at center, black 38%, rgba(0,0,0,0.85) 45%, transparent 49.5%);
+  mask-image: radial-gradient(circle at center, black 38%, rgba(0,0,0,0.85) 45%, transparent 49.5%);
+  
+  /* Mantener el halo naranja con intensidad idéntica */
+  filter: drop-shadow(0 0 8px var(--accent-orange-glow));
 }
 
 .title-main {
@@ -88,7 +91,7 @@ header {
   opacity: 0.95;
 }
 
-/* Aumento de tamaño del 35% para el código GC */
+/* Código GCBXGZR con incremento del 35% */
 .gc-code {
   font-size: clamp(1.2rem, 3vh, 1.42rem);
   font-weight: 700;
