@@ -200,11 +200,12 @@ footer a:hover {
 const LAT_CENTRO = 39.49970;
 const LON_CENTRO = -0.41990;
 
-// Distancia máxima requerida para iniciar el juego (20 metros)
-const RADIO_INICIO_METROS = 20;
+// Distancias límite
+const RADIO_INICIO_METROS = 20;   // Radio para activar/iniciar el juego por primera vez
+const RADIO_JUEGO_METROS = 700;   // Radio máximo permitido para poder realizar consultas
 const PASO = 0.00005;
 
-// Recuperar el estado guardado en el navegador del usuario
+// Estado persistente en el navegador
 let juegoIniciado = localStorage.getItem("reverse_cache_iniciado") === "true";
 
 function calcularHaversine(lat1, lon1, lat2, lon2) {
@@ -239,10 +240,10 @@ function procesarCoordenadas(lat, lon) {
   const displayMetros = document.getElementById("distancia-display");
   const status = document.getElementById("status-display");
 
-  // Verificar la distancia con respecto al centro del campo de juego
+  // Distancia con respecto al centro del campo de juego
   const distAlCentro = calcularHaversine(lat, lon, LAT_CENTRO, LON_CENTRO);
 
-  // Si aún no ha iniciado el juego, validar que esté dentro del radio de 20m
+  // 1. Si no ha iniciado el juego previamente, debe estar obligatoriamente a <= 20 m del centro
   if (!juegoIniciado) {
     if (distAlCentro > RADIO_INICIO_METROS) {
       displayMetros.innerText = "---";
@@ -251,11 +252,19 @@ function procesarCoordenadas(lat, lon) {
       return;
     } else {
       juegoIniciado = true;
-      localStorage.setItem("reverse_cache_iniciado", "true"); // Guarda la validación permanentemente en el navegador
+      localStorage.setItem("reverse_cache_iniciado", "true");
     }
   }
 
-  // Si ya está iniciado (ahora o en una sesión previa), calcular distancia al GZ final
+  // 2. Si ya se inició el juego, verificar que el jugador se encuentre dentro del radio de 700 m de la zona de juego
+  if (distAlCentro > RADIO_JUEGO_METROS) {
+    displayMetros.innerText = "---";
+    displayMetros.style.color = "#ff4444";
+    status.innerText = `Fuera de la zona de juego (${distAlCentro}m del centro. Máximo 700m).`;
+    return;
+  }
+
+  // 3. Si todo es correcto, calcular distancia al GZ final
   const latGrid = Math.round(lat / PASO) * PASO;
   const lonGrid = Math.round(lon / PASO) * PASO;
   const latFinalGrid = 39.50015;
