@@ -158,6 +158,10 @@ header {
   transform: scale(0.97);
   box-shadow: 0 2px 10px var(--accent-orange-glow);
 }
+.btn-query:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 footer {
   font-size: clamp(0.75rem, 1.6vh, 0.82rem);
   color: #64748b;
@@ -201,12 +205,13 @@ const LAT_CENTRO = 39.49970;
 const LON_CENTRO = -0.41990;
 
 // Distancias límite
-const RADIO_INICIO_METROS = 20;   // Radio para activar/iniciar el juego por primera vez
-const RADIO_JUEGO_METROS = 700;   // Radio máximo permitido para poder realizar consultas
+const RADIO_INICIO_METROS = 20;   // Radio para activar el juego
+const RADIO_JUEGO_METROS = 700;   // Radio máximo permitido de juego
 const PASO = 0.00005;
 
-// Estado persistente en el navegador
+// Estado persistente
 let juegoIniciado = localStorage.getItem("reverse_cache_iniciado") === "true";
+let watchId = null;
 
 function calcularHaversine(lat1, lon1, lat2, lon2) {
   const R = 6371000;
@@ -221,19 +226,93 @@ function calcularHaversine(lat1, lon1, lat2, lon2) {
 
 function obtenerUbicacionGPS() {
   const status = document.getElementById("status-display");
-  status.innerText = "Obteniendo GPS...";
+  const btn = document.getElementById("btn-consultar");
+  
+  status.innerText = "Conectando con satélites GPS...";
+  btn.disabled = true;
 
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition((posicion) => {
-      const lat = posicion.coords.latitude;
-      const lon = posicion.coords.longitude;
-      procesarCoordenadas(lat, lon);
-    }, (error) => {
-      status.innerText = "Error GPS: Activa la ubicación";
-    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-  } else {
-    status.innerText = "GPS no compatible.";
+  // Limpiar cualquier rastreo previo si existiera
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
   }
+
+  if (!("geolocation" in navigator)) {
+    status.innerText = "GPS no compatible en este navegador.";
+    btn.disabled = false;
+    return;
+  }
+
+  let mejorUbicacion = null;
+  let contadorIntentos = 0;
+
+  // Configuraciones para forzar GPS de alta precisión en tiempo real
+  const opcionesGPS = {
+    enableHighAccuracy: true,
+    timeout: 12000,
+    maximumAge: 0
+  };
+
+  // Función de cierre al conseguir la medición
+  const finalizarMedicion = (posicion) => {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+    btn.disabled = false;
+    procesarCoordenadas(posicion.coords.latitude, posicion.coords.longitude);
+  };
+
+  // Temporizador de seguridad: Si tras 10 segundos no baja de 15m de precisión, usa la mejor obtenida
+  const timerFuerzaBruta = setTimeout(() => {
+    if (mejorUbicacion) {
+      finalizarMedicion(mejorUbicacion);
+    } else {
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      status.innerText = "Error GPS: Mala recepción de satélites.";
+      btn.disabled = false;
+    }
+  }, 10000);
+
+  // Usar watchPosition para "calentar" el GPS del teléfono y obtener lecturas dinámicas
+  watchId = navigator.geolocation.watchPosition(
+    (posicion) => {
+      contadorIntentos++;
+      const precisionActual = Math.round(posicion.coords.accuracy);
+
+      status.innerText = `Calibrando GPS (Margen: ±${precisionActual}m)...`;
+
+      // Guardar la lectura de mejor precisión
+      if (!mejorUbicacion || posicion.coords.accuracy < mejorUbicacion.coords.accuracy) {
+        mejorUbicacion = posicion;
+      }
+
+      // Si la precisión es excelente (<= 15 metros) o lleva varias lecturas, procesamos de inmediato
+      if (precisionActual <= 15 || contadorIntentos >= 4) {
+        clearTimeout(timerFuerzaBruta);
+        finalizarMedicion(mejorUbicacion);
+      }
+    },
+    (error) => {
+      clearTimeout(timerFuerzaBruta);
+      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+      btn.disabled = false;
+      
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          status.innerText = "Permiso de ubicación denegado.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          status.innerText = "Ubicación no disponible. Activa el GPS.";
+          break;
+        case error.TIMEOUT:
+          status.innerText = "Tiempo de espera agotado al buscar GPS.";
+          break;
+        default:
+          status.innerText = "Error GPS al obtener ubicación.";
+      }
+    },
+    opcionesGPS
+  );
 }
 
 function procesarCoordenadas(lat, lon) {
