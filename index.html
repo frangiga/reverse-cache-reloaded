@@ -205,8 +205,8 @@ const LAT_CENTRO = 39.49970;
 const LON_CENTRO = -0.41990;
 
 // Distancias límite
-const RADIO_INICIO_METROS = 20;   // Radio para activar el juego
-const RADIO_JUEGO_METROS = 700;   // Radio máximo permitido de juego
+const RADIO_INICIO_METROS = 20; // Radio para activar el juego
+const RADIO_JUEGO_METROS = 700; // Radio máximo permitido de juego
 const PASO = 0.00005;
 
 // Estado persistente
@@ -227,7 +227,7 @@ function calcularHaversine(lat1, lon1, lat2, lon2) {
 function obtenerUbicacionGPS() {
   const status = document.getElementById("status-display");
   const btn = document.getElementById("btn-consultar");
-  
+
   status.innerText = "Conectando con satélites GPS...";
   btn.disabled = true;
 
@@ -274,45 +274,41 @@ function obtenerUbicacionGPS() {
   }, 10000);
 
   // Usar watchPosition para "calentar" el GPS del teléfono y obtener lecturas dinámicas
-  watchId = navigator.geolocation.watchPosition(
-    (posicion) => {
-      contadorIntentos++;
-      const precisionActual = Math.round(posicion.coords.accuracy);
+  watchId = navigator.geolocation.watchPosition((posicion) => {
+    contadorIntentos++;
+    const precisionActual = Math.round(posicion.coords.accuracy);
+    status.innerText = `Calibrando GPS (Margen: ±${precisionActual}m)...`;
 
-      status.innerText = `Calibrando GPS (Margen: ±${precisionActual}m)...`;
+    // Guardar la lectura de mejor precisión
+    if (!mejorUbicacion || posicion.coords.accuracy < mejorUbicacion.coords.accuracy) {
+      mejorUbicacion = posicion;
+    }
 
-      // Guardar la lectura de mejor precisión
-      if (!mejorUbicacion || posicion.coords.accuracy < mejorUbicacion.coords.accuracy) {
-        mejorUbicacion = posicion;
-      }
-
-      // Si la precisión es excelente (<= 15 metros) o lleva varias lecturas, procesamos de inmediato
-      if (precisionActual <= 15 || contadorIntentos >= 4) {
-        clearTimeout(timerFuerzaBruta);
-        finalizarMedicion(mejorUbicacion);
-      }
-    },
-    (error) => {
+    // Si la precisión es excelente (<= 15 metros) o lleva varias lecturas, procesamos de inmediato
+    if (precisionActual <= 15 || contadorIntentos >= 4) {
       clearTimeout(timerFuerzaBruta);
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      btn.disabled = false;
-      
-      switch(error.code) {
-        case error.PERMISSION_DENIED:
-          status.innerText = "Permiso de ubicación denegado.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          status.innerText = "Ubicación no disponible. Activa el GPS.";
-          break;
-        case error.TIMEOUT:
-          status.innerText = "Tiempo de espera agotado al buscar GPS.";
-          break;
-        default:
-          status.innerText = "Error GPS al obtener ubicación.";
-      }
-    },
-    opcionesGPS
-  );
+      finalizarMedicion(mejorUbicacion);
+    }
+  },
+  (error) => {
+    clearTimeout(timerFuerzaBruta);
+    if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+    btn.disabled = false;
+    switch(error.code) {
+      case error.PERMISSION_DENIED:
+        status.innerText = "Permiso de ubicación denegado.";
+        break;
+      case error.POSITION_UNAVAILABLE:
+        status.innerText = "Ubicación no disponible. Activa el GPS.";
+        break;
+      case error.TIMEOUT:
+        status.innerText = "Tiempo de espera agotado al buscar GPS.";
+        break;
+      default:
+        status.innerText = "Error GPS al obtener ubicación.";
+    }
+  },
+  opcionesGPS);
 }
 
 function procesarCoordenadas(lat, lon) {
@@ -346,8 +342,10 @@ function procesarCoordenadas(lat, lon) {
   // 3. Si todo es correcto, calcular distancia al GZ final
   const latGrid = Math.round(lat / PASO) * PASO;
   const lonGrid = Math.round(lon / PASO) * PASO;
-  const latFinalGrid = 39.50015;
-  const lonFinalGrid = -0.41575;
+
+  // Coordenadas finales codificadas en Base64 (39.50015 y -0.41575)
+  const latFinalGrid = parseFloat(atob("MzkuNTAwMTU="));
+  const lonFinalGrid = parseFloat(atob("-MC40MTU3NQ=="));
 
   const metros = calcularHaversine(latGrid, lonGrid, latFinalGrid, lonFinalGrid);
 
@@ -364,3 +362,4 @@ function procesarCoordenadas(lat, lon) {
 </script>
 </body>
 </html>
+```[cite: 1]
