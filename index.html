@@ -1,12 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
-<!-- SI ESTÁS VIENDO ESTO PARA SOLUCIONAR EL MULTI, ERES UN MISERABLE QUE NO MERECE ESTE CACHÉ -->
-
-    <!-- BUENO... TAMBIÉN UN GRAN HIJO O HIJA DE LA GRAN PUTA (QUE NO SE TE OLVIDE) -->
-  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>REVERSE CACHÉ RELOADED - GCBXGZR</title>
@@ -22,6 +16,7 @@
   --card-bg: rgba(20, 23, 28, 0.85);
   --text-main: #ffffff;
 }
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -29,6 +24,7 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
 html, body {
   width: 100%;
   height: 100%;
@@ -38,6 +34,7 @@ html, body {
   background: radial-gradient(circle at 50% 30%, var(--bg-radial-center) 0%, var(--bg-radial-outer) 100%);
   color: var(--text-main);
 }
+
 .container {
   display: flex;
   flex-direction: column;
@@ -48,6 +45,7 @@ html, body {
   height: 100dvh;
   padding: clamp(12px, 2.5vh, 20px) 16px;
 }
+
 header {
   display: flex;
   flex-direction: column;
@@ -55,6 +53,7 @@ header {
   text-align: center;
   margin-top: clamp(2px, 1vh, 10px);
 }
+
 .multi-logo {
   width: clamp(70px, 13vh, 100px);
   height: clamp(70px, 13vh, 100px);
@@ -64,6 +63,7 @@ header {
   mask-image: radial-gradient(circle at center, black 38%, rgba(0,0,0,0.85) 45%, transparent 49.5%);
   filter: drop-shadow(0 0 8px var(--accent-orange-glow));
 }
+
 .title-main {
   font-size: clamp(1.2rem, 3.2vh, 1.5rem);
   font-weight: 800;
@@ -73,6 +73,7 @@ header {
   text-shadow: 0 0 10px var(--accent-orange-glow);
   line-height: 1.1;
 }
+
 .title-sub {
   font-size: clamp(0.95rem, 2.6vh, 1.2rem);
   font-weight: 700;
@@ -84,6 +85,7 @@ header {
   line-height: 1.1;
   opacity: 0.95;
 }
+
 .gc-code {
   font-size: clamp(1.2rem, 3vh, 1.42rem);
   font-weight: 700;
@@ -92,6 +94,7 @@ header {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   margin-top: clamp(4px, 1vh, 8px);
 }
+
 .display-card {
   background: var(--card-bg);
   backdrop-filter: blur(12px);
@@ -108,6 +111,7 @@ header {
   gap: clamp(10px, 2vh, 16px);
   margin: auto 0;
 }
+
 .label {
   font-size: clamp(0.85rem, 2vh, 1rem);
   font-weight: 600;
@@ -116,6 +120,7 @@ header {
   color: var(--accent-orange-light);
   text-shadow: 0 0 6px var(--accent-orange-glow);
 }
+
 .value {
   font-size: clamp(2.8rem, 7vh, 3.8rem);
   font-weight: 800;
@@ -127,12 +132,14 @@ header {
   justify-content: center;
   letter-spacing: 1px;
 }
+
 .status-gps {
   font-size: clamp(0.8rem, 1.8vh, 0.9rem);
   font-weight: 500;
   color: #94a3b8;
   letter-spacing: 0.5px;
 }
+
 .footer-section {
   display: flex;
   flex-direction: column;
@@ -142,6 +149,7 @@ header {
   gap: clamp(8px, 1.8vh, 14px);
   margin-bottom: clamp(2px, 1vh, 8px);
 }
+
 .btn-query {
   width: 100%;
   padding: clamp(14px, 2vh, 17px);
@@ -160,25 +168,30 @@ header {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   -webkit-tap-highlight-color: transparent;
 }
+
 .btn-query:active {
   transform: scale(0.97);
   box-shadow: 0 2px 10px var(--accent-orange-glow);
 }
+
 .btn-query:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 footer {
   font-size: clamp(0.75rem, 1.6vh, 0.82rem);
   color: #64748b;
   letter-spacing: 1px;
 }
+
 footer a {
   color: var(--accent-orange-light);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease;
 }
+
 footer a:hover {
   color: var(--fluor-cyan);
 }
@@ -192,27 +205,24 @@ footer a:hover {
     <div class="title-sub">RELOADED</div>
     <div class="gc-code">GCBXGZR</div>
   </header>
-
   <main class="display-card">
     <div class="label">DISTANCIA AL GZ</div>
     <div id="distancia-display" class="value">-- m</div>
     <div id="status-display" class="status-gps">Pulsa para consultar ubicación</div>
   </main>
-
   <div class="footer-section">
     <button id="btn-consultar" class="btn-query" onclick="obtenerUbicacionGPS()">Consultar Metros</button>
     <footer>Desarrollado por <a href="https://www.instagram.com/fran_giga/" target="_blank" rel="noopener noreferrer">fran_giga</a></footer>
   </div>
 </div>
-
 <script>
 // Coordenadas del centro del campo de juego: N 39° 29.982 W 000° 25.194
 const LAT_CENTRO = 39.49970;
 const LON_CENTRO = -0.41990;
 
 // Distancias límite
-const RADIO_INICIO_METROS = 20;   // Radio para activar el juego
-const RADIO_JUEGO_METROS = 700;   // Radio máximo permitido de juego
+const RADIO_INICIO_METROS = 20; // Radio para activar el juego
+const RADIO_JUEGO_METROS = 700; // Radio máximo permitido de juego
 const PASO = 0.00005;
 
 // Estado persistente
@@ -230,10 +240,24 @@ function calcularHaversine(lat1, lon1, lat2, lon2) {
   return Math.round(R * c);
 }
 
+// Función auxiliar para convertir coordenadas decimales a formato DMM (Grados y Minutos Decimales)
+function decimalToDMM(lat, lon) {
+  const latAbs = Math.abs(lat);
+  const latGrados = Math.floor(latAbs);
+  const latMinutos = ((latAbs - latGrados) * 60).toFixed(3);
+  const latHemis = lat >= 0 ? "N" : "S";
+
+  const lonAbs = Math.abs(lon);
+  const lonGrados = Math.floor(lonAbs);
+  const lonMinutos = ((lonAbs - lonGrados) * 60).toFixed(3);
+  const lonHemis = lon >= 0 ? "E" : "W";
+
+  return `${latHemis} ${latGrados}° ${latMinutos}′ ${lonHemis} ${lonGrados}° ${lonMinutos}′`.replace(/ 0° /, ' 000° ');
+}
+
 function obtenerUbicacionGPS() {
   const status = document.getElementById("status-display");
   const btn = document.getElementById("btn-consultar");
-  
   status.innerText = "Conectando con satélites GPS...";
   btn.disabled = true;
 
@@ -268,7 +292,7 @@ function obtenerUbicacionGPS() {
     procesarCoordenadas(posicion.coords.latitude, posicion.coords.longitude);
   };
 
-  // Temporizador de seguridad: Si tras 10 segundos no baja de 15m de precisión, usa la mejor obtenida
+  // Temporizador de seguridad
   const timerFuerzaBruta = setTimeout(() => {
     if (mejorUbicacion) {
       finalizarMedicion(mejorUbicacion);
@@ -279,46 +303,37 @@ function obtenerUbicacionGPS() {
     }
   }, 10000);
 
-  // Usar watchPosition para "calentar" el GPS del teléfono y obtener lecturas dinámicas
-  watchId = navigator.geolocation.watchPosition(
-    (posicion) => {
-      contadorIntentos++;
-      const precisionActual = Math.round(posicion.coords.accuracy);
+  watchId = navigator.geolocation.watchPosition((posicion) => {
+    contadorIntentos++;
+    const precisionActual = Math.round(posicion.coords.accuracy);
+    status.innerText = `Calibrando GPS (Margen: ±${precisionActual}m)...`;
 
-      status.innerText = `Calibrando GPS (Margen: ±${precisionActual}m)...`;
+    if (!mejorUbicacion || posicion.coords.accuracy < mejorUbicacion.coords.accuracy) {
+      mejorUbicacion = posicion;
+    }
 
-      // Guardar la lectura de mejor precisión
-      if (!mejorUbicacion || posicion.coords.accuracy < mejorUbicacion.coords.accuracy) {
-        mejorUbicacion = posicion;
-      }
-
-      // Si la precisión es excelente (<= 15 metros) o lleva varias lecturas, procesamos de inmediato
-      if (precisionActual <= 15 || contadorIntentos >= 4) {
-        clearTimeout(timerFuerzaBruta);
-        finalizarMedicion(mejorUbicacion);
-      }
-    },
-    (error) => {
+    if (precisionActual <= 15 || contadorIntentos >= 4) {
       clearTimeout(timerFuerzaBruta);
-      if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-      btn.disabled = false;
-      
-      switch(error.code) {
-        case error.PERMISSION_DENIED:
-          status.innerText = "Permiso de ubicación denegado.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          status.innerText = "Ubicación no disponible. Activa el GPS.";
-          break;
-        case error.TIMEOUT:
-          status.innerText = "Tiempo de espera agotado al buscar GPS.";
-          break;
-        default:
-          status.innerText = "Error GPS al obtener ubicación.";
-      }
-    },
-    opcionesGPS
-  );
+      finalizarMedicion(mejorUbicacion);
+    }
+  }, (error) => {
+    clearTimeout(timerFuerzaBruta);
+    if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+    btn.disabled = false;
+    switch(error.code) {
+      case error.PERMISSION_DENIED:
+        status.innerText = "Permiso de ubicación denegado.";
+        break;
+      case error.POSITION_UNAVAILABLE:
+        status.innerText = "Ubicación no disponible. Activa el GPS.";
+        break;
+      case error.TIMEOUT:
+        status.innerText = "Tiempo de espera agotado al buscar GPS.";
+        break;
+      default:
+        status.innerText = "Error GPS al obtener ubicación.";
+    }
+  }, opcionesGPS);
 }
 
 function procesarCoordenadas(lat, lon) {
@@ -341,7 +356,7 @@ function procesarCoordenadas(lat, lon) {
     }
   }
 
-  // 2. Si ya se inició el juego, verificar que el jugador se encuentre dentro del radio de 700 m de la zona de juego
+  // 2. Si ya se inició el juego, verificar que el jugador se encuentre dentro del radio de 700 m
   if (distAlCentro > RADIO_JUEGO_METROS) {
     displayMetros.innerText = "---";
     displayMetros.style.color = "#ff4444";
@@ -354,13 +369,12 @@ function procesarCoordenadas(lat, lon) {
   const lonGrid = Math.round(lon / PASO) * PASO;
   const latFinalGrid = 39.50015;
   const lonFinalGrid = -0.41575;
-
   const metros = calcularHaversine(latGrid, lonGrid, latFinalGrid, lonFinalGrid);
 
   if (metros <= 5) {
     displayMetros.innerText = "¡AQUÍ ES!";
     displayMetros.style.color = "#ff7700";
-    status.innerText = "Has llegado al GZ final.";
+    status.innerText = `GZ = ${decimalToDMM(latFinalGrid, lonFinalGrid)}`;
   } else {
     displayMetros.innerText = `${metros} m`;
     displayMetros.style.color = "#00f3ff";
